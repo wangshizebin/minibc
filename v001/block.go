@@ -3,8 +3,6 @@ package main
 import (
 	"bytes"
 	"crypto/sha256"
-	"encoding/gob"
-	"log"
 	"time"
 )
 
@@ -12,7 +10,7 @@ const (
 	VERSION = 1
 )
 
-//Block表示一个区块
+//Block表示一个区
 type Block struct {
 	Version       int32  //协议版本号
 	HashPrevBlock []byte //上一个区块的hash值，长度为32个字节
@@ -21,32 +19,6 @@ type Block struct {
 	Nonce         int32  //要找的符合POW要求的的随机数
 
 	Data []byte //区块存储的内容，在虚拟币中用来存储交易信息
-}
-
-//区块序列化，也就是将区块结构的内部数据转换为可以存储的字节流的格式
-func (block *Block) Serialize() []byte {
-	buff := new(bytes.Buffer)
-
-	encoder := gob.NewEncoder(buff)
-	err := encoder.Encode(block)
-	if err != nil {
-		log.Panic(err)
-	}
-
-	return buff.Bytes()
-}
-
-//区块反序列化，也就是将字节流转换为含有内部数据的区块结构，这个过程跟Serialize正好相反
-func Deserialize(bytesBlock []byte) (*Block) {
-	decoder := gob.NewDecoder(bytes.NewReader(bytesBlock))
-
-	var block Block
-	err := decoder.Decode(&block)
-	if err != nil {
-		log.Panic(err)
-	}
-
-	return &block
 }
 
 //获得当前区块的hash值
@@ -77,15 +49,7 @@ func NewBlock(data string, prevHash []byte) *Block {
 }
 
 //生成创世纪区块，所谓创世纪区块是区块链的第一个区块。它存储的内容可以是任意内容，比如Genesis Block。
-// 由于它没有前一区块，所以不需要提供前一区块的hashz值。
+// 由于它没有前一区块，所以不需要提供前一区块的hash值。
 func NewGenesisBlock() *Block {
-	block := Block{
-		Version:       VERSION,
-		HashPrevBlock: []byte{},
-		Time:          int32(time.Now().Unix()),
-		Bits:          0,
-		Nonce:         0,
-		Data:          []byte("Genesis Block"),
-	}
-	return &block
+	return NewBlock("Genesis Block", []byte{})
 }

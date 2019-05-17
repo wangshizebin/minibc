@@ -6,7 +6,7 @@ import (
 	"fmt"
 )
 
-//将32位整型数字按小端模式转换成字节切片
+//将32位整型数字按大端模式转换成字节切片
 func IntToByte(val int32) []byte {
 	buffer := new(bytes.Buffer)
 	binary.Write(buffer, binary.BigEndian, val)
