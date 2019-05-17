@@ -10,7 +10,7 @@ const (
 	VERSION = 1
 )
 
-//Block表示一个区
+//Block表示一个区块
 type Block struct {
 	Version       int32  //协议版本号
 	HashPrevBlock []byte //上一个区块的hash值，长度为32个字节
