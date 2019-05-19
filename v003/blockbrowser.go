@@ -7,7 +7,7 @@ import (
 )
 
 //表示一个区块链浏览器
-type BlockBrower struct {
+type BlockBrowser struct {
 	//中止BrowserServer通道
 	chanQuit chan bool
 
@@ -19,7 +19,7 @@ const (
 	SERVER_ADDR = "localhost"
 )
 //处理Url为 http://SERVER_ADDR:8080/ 的请求，显示区块链浏览器首页信息
-func (bb *BlockBrower) handleIndex(response http.ResponseWriter, request *http.Request) {
+func (bb *BlockBrowser) handleIndex(response http.ResponseWriter, request *http.Request) {
 	content := "<html><br>"
 	content = content + "<b>&nbsp;&nbsp;&nbsp;&nbsp;MiniBC区块链区块浏览器</b><br><br>"
 	content = content + "&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"shutdown\">关闭MiniBC</a>"
@@ -30,7 +30,7 @@ func (bb *BlockBrower) handleIndex(response http.ResponseWriter, request *http.R
 }
 
 //处理Url为 http://SERVER_ADDR:8080/shutdown 的请求，关闭区块链浏览器，退出系统
-func (bb *BlockBrower) handleShutdown(response http.ResponseWriter, request *http.Request) {
+func (bb *BlockBrowser) handleShutdown(response http.ResponseWriter, request *http.Request) {
 	fmt.Println("")
 	fmt.Println("")
 	fmt.Println("=========================================================================")
@@ -41,7 +41,7 @@ func (bb *BlockBrower) handleShutdown(response http.ResponseWriter, request *htt
 }
 
 //处理Url为 http://SERVER_ADDR:8080/getblocks 的请求，打印所有区块链信息
-func (bb *BlockBrower) handleGetBlocks(response http.ResponseWriter, request *http.Request) {
+func (bb *BlockBrowser) handleGetBlocks(response http.ResponseWriter, request *http.Request) {
 
 	//获取区块链高度
 	blockHeight := strconv.Itoa(bb.blockChain.Iterator().GetCount())
@@ -58,9 +58,9 @@ func (bb *BlockBrower) handleGetBlocks(response http.ResponseWriter, request *ht
 		if block == nil {
 			break
 		}
-		content = content + "当前区块哈希值：0x" + BytesToHex(block.GetHash()) + "<br>"
+		content = content + "当前区块哈希值：" + BytesToHex(block.GetHash()) + "<br>"
 		content = content + "当前区块内容为：" +  string(block.Data) + "<br>"
-		content = content + "前一区块哈希值：0x" +  BytesToHex(block.HashPrevBlock) + "<br>"
+		content = content + "前一区块哈希值：" +  BytesToHex(block.HashPrevBlock) + "<br>"
 		content = content + "=============================================" + "<br>"
 	}
 
@@ -69,13 +69,13 @@ func (bb *BlockBrower) handleGetBlocks(response http.ResponseWriter, request *ht
 }
 
 //处理Url为 http://SERVER_ADDR:8080/generateblock 的请求，生成新区块
-func (bb *BlockBrower) handleGenerateBlock(response http.ResponseWriter, request *http.Request) {
+func (bb *BlockBrowser) handleGenerateBlock(response http.ResponseWriter, request *http.Request) {
 
 	//获取区块链高度
 	height := bb.blockChain.Iterator().GetCount()
 
 	//创建新的区块
-	bb.blockChain.AddBlock("Mini block " + strconv.Itoa(height))
+	bb.blockChain.AddBlock("MiniBC Block " + strconv.Itoa(height))
 
 	blockHeight := strconv.Itoa(bb.blockChain.Iterator().GetCount())
 
@@ -91,9 +91,9 @@ func (bb *BlockBrower) handleGenerateBlock(response http.ResponseWriter, request
 		if block == nil {
 			break
 		}
-		content = content + "当前区块哈希值：0x" + BytesToHex(block.GetHash()) + "<br>"
+		content = content + "当前区块哈希值：" + BytesToHex(block.GetHash()) + "<br>"
 		content = content + "当前区块内容为：" +  string(block.Data) + "<br>"
-		content = content + "前一区块哈希值：0x" +  BytesToHex(block.HashPrevBlock) + "<br>"
+		content = content + "前一区块哈希值：" +  BytesToHex(block.HashPrevBlock) + "<br>"
 		content = content + "=============================================" + "<br>"
 	}
 
@@ -103,7 +103,7 @@ func (bb *BlockBrower) handleGenerateBlock(response http.ResponseWriter, request
 
 
 //启动区块链浏览器
-func (bb *BlockBrower) Start() {
+func (bb *BlockBrowser) Start() {
 	fmt.Println("=========================================================================")
 	fmt.Println("MiniBC 区块链浏览器已经启动，请通过浏览器http://" + SERVER_ADDR + ":8080访问....")
 	fmt.Println("=========================================================================")
@@ -121,10 +121,10 @@ func (bb *BlockBrower) Start() {
 	}
 }
 
-//创建一个区块链浏览器BlockBrower
-func NewBlockBrower(blockchain *BlockChain) *BlockBrower {
-	blockBrower := BlockBrower{}
-	blockBrower.chanQuit = make(chan bool)
-	blockBrower.blockChain = blockchain
-	return &blockBrower
+//创建一个区块链浏览器BlockBrowser
+func NewBlockBrowser(blockchain *BlockChain) *BlockBrowser {
+	BlockBrowser := BlockBrowser{}
+	BlockBrowser.chanQuit = make(chan bool)
+	BlockBrowser.blockChain = blockchain
+	return &BlockBrowser
 }

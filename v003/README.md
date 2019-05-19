@@ -12,17 +12,17 @@
 	http.HandleFunc("/", handleIndex)
 	http.ListenAndServe(":8080", nil)
 
-我们的区块链浏览器就是使用了golang标准包里的http服务完成的。使用起来非常简单，调用NewBlockBrower创建一个区块链浏览器对象，然后调用Start方法就可以工作了：
+我们的区块链浏览器就是使用了golang标准包里的http服务完成的。使用起来非常简单，调用NewBlockBrowser创建一个区块链浏览器对象，然后调用Start方法就可以工作了：
 
 	//启动区块链浏览器，您可以通过浏览器 http://SERVER_ADDR:8080 访问
-	NewBlockBrower(bc).Start()
+	NewBlockBrowser(bc).Start()
 
 
 ####  区块链浏览器
 
 区块链浏览器的结构比较简单，一个通知退出的channel和当前区块链对象BlockChain：  
 
-	type BlockBrower struct {
+	type BlockBrowser struct {
 		//中止BrowserServer通道
 		chanQuit chan bool
 
@@ -34,7 +34,7 @@
 目前区块链服务器共能处理四种Url："/"、"/shutdown"、"/getblocks"和"/generateblock"，监听8080端口。
 如果MiniBC运行后，如果通过本机器打开浏览器，可直接输入：http://localhost：8080 
 
-	func (bb *BlockBrower) Start() {
+	func (bb *BlockBrowser) Start() {
 		fmt.Println("=========================================================================")
 		fmt.Println("MiniBC 区块链浏览器已经启动，请通过浏览器http://" + SERVER_ADDR + ":8080访问....")
 		fmt.Println("=========================================================================")
@@ -57,7 +57,7 @@
 处理Url为 http://SERVER_ADDR:8080/ 的请求，显示区块链浏览器首页信息  
 
 
-	func (bb *BlockBrower) handleIndex(response http.ResponseWriter, request *http.Request) {
+	func (bb *BlockBrowser) handleIndex(response http.ResponseWriter, request *http.Request) {
 		content := "<html><br>"
 		content = content + "<b>&nbsp;&nbsp;&nbsp;&nbsp;MiniBC区块链区块浏览器</b><br><br>"
 		content = content + "&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"shutdown\">关闭MiniBC</a>"
@@ -69,7 +69,7 @@
 
 处理Url为 http://SERVER_ADDR:8080/shutdown 的请求，关闭区块链浏览器，退出系统  
 
-	func (bb *BlockBrower) handleShutdown(response http.ResponseWriter, request *http.Request) {
+	func (bb *BlockBrowser) handleShutdown(response http.ResponseWriter, request *http.Request) {
 		fmt.Println("")
 		fmt.Println("")
 		fmt.Println("=========================================================================")
@@ -81,7 +81,7 @@
 
 处理Url为 http://SERVER_ADDR:8080/getblocks 的请求，打印所有区块链信息  
 
-	func (bb *BlockBrower) handleGetBlocks(response http.ResponseWriter, request *http.Request) {
+	func (bb *BlockBrowser) handleGetBlocks(response http.ResponseWriter, request *http.Request) {
 
 		//获取区块链高度
 		blockHeight := strconv.Itoa(bb.blockChain.Iterator().GetCount())
@@ -110,7 +110,7 @@
 
 //处理Url为 http://SERVER_ADDR:8080/generateblock 的请求，生成新区块  
 
-	func (bb *BlockBrower) handleGenerateBlock(response http.ResponseWriter, request *http.Request) {
+	func (bb *BlockBrowser) handleGenerateBlock(response http.ResponseWriter, request *http.Request) {
 
 		//获取区块链高度
 		height := bb.blockChain.Iterator().GetCount()
