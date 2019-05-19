@@ -54,7 +54,9 @@
 
 实现了4个Url处理函数：
 
-处理Url为 http://SERVER_ADDR:8080/ 的请求，显示区块链浏览器首页信息
+处理Url为 http://SERVER_ADDR:8080/ 的请求，显示区块链浏览器首页信息  
+
+
 	func (bb *BlockBrower) handleIndex(response http.ResponseWriter, request *http.Request) {
 		content := "<html><br>"
 		content = content + "<b>&nbsp;&nbsp;&nbsp;&nbsp;MiniBC区块链区块浏览器</b><br><br>"
@@ -65,7 +67,8 @@
 		response.Write([]byte(content))
 	}
 
-处理Url为 http://SERVER_ADDR:8080/shutdown 的请求，关闭区块链浏览器，退出系统
+处理Url为 http://SERVER_ADDR:8080/shutdown 的请求，关闭区块链浏览器，退出系统  
+
 	func (bb *BlockBrower) handleShutdown(response http.ResponseWriter, request *http.Request) {
 		fmt.Println("")
 		fmt.Println("")
@@ -76,7 +79,8 @@
 		bb.chanQuit <- true
 	}
 
-处理Url为 http://SERVER_ADDR:8080/getblocks 的请求，打印所有区块链信息
+处理Url为 http://SERVER_ADDR:8080/getblocks 的请求，打印所有区块链信息  
+
 	func (bb *BlockBrower) handleGetBlocks(response http.ResponseWriter, request *http.Request) {
 
 		//获取区块链高度
@@ -104,7 +108,8 @@
 		response.Write([]byte(content))
 	}
 
-//处理Url为 http://SERVER_ADDR:8080/generateblock 的请求，生成新区块
+//处理Url为 http://SERVER_ADDR:8080/generateblock 的请求，生成新区块  
+
 	func (bb *BlockBrower) handleGenerateBlock(response http.ResponseWriter, request *http.Request) {
 
 		//获取区块链高度
