@@ -23,17 +23,7 @@ func (bc *BlockChain) AddBlock(data string) {
 	//校验区块链上是否已经有了创世纪区块
 	hashLast := bc.DB.Get(TABLE_BLOCKS, BLOCK_LAST)
 	if len(hashLast) == 0 {
-		//创建一个创世纪区块
-		block := NewGenesisBlock()
-
-		//取该区块的哈希值
-		blockHash := block.GetHash()
-
-		//将该区块的哈希值和序列化数据组成键值对存入数据库
-		bc.DB.Set(TABLE_BLOCKS, string(blockHash), block.Serialize())
-
-		//将最后一个区块的哈希值存入数据库，Key 标记为 "last"
-		bc.DB.Set(TABLE_BLOCKS, BLOCK_LAST, blockHash)
+		//当前链上没有区块直接返回
 		return
 	}
 
@@ -94,6 +84,7 @@ func (bc *BlockChain) Iterator() *BlockchainIterator {
 	return it
 }
 
+// 遍历区块链，返回当前区块，移向下一区块
 func (it *BlockchainIterator) Next() *Block {
 	if it.hashCurrent == nil {
 		//已经没有前一区块，到此结束
