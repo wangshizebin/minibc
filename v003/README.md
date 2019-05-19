@@ -140,9 +140,7 @@
 
 运行后输出：
 
-
-![Image text](https://github.com/wangshizebin/minibc/blob/master/v003/index.png)
-![Image text](https://github.com/wangshizebin/minibc/blob/master/v003/viewblock.png)
+	![Image text](https://github.com/wangshizebin/minibc/blob/master/v003/viewblock.png)
 
 
 #### 我们实现的和将要实现的  
