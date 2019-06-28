@@ -1,8 +1,8 @@
 package main
 
 import (
-"bytes"
-"crypto/sha256"
+	"bytes"
+	"crypto/sha256"
 	"encoding/gob"
 	"log"
 	"time"
@@ -81,4 +81,3 @@ func NewBlock(data string, prevHash []byte) *Block {
 func NewGenesisBlock() *Block {
 	return NewBlock("Genesis Block 0", []byte{})
 }
-

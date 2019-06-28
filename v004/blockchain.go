@@ -1,5 +1,7 @@
 package main
 
+import "log"
+
 const (
 	TABLE_BLOCKS = "blocks"
 	BLOCK_LAST   = "last"
@@ -23,17 +25,8 @@ func (bc *BlockChain) AddBlock(data string) {
 	//校验区块链上是否已经有了创世纪区块
 	hashLast := bc.DB.Get(TABLE_BLOCKS, BLOCK_LAST)
 	if len(hashLast) == 0 {
-		//创建一个创世纪区块
-		block := NewGenesisBlock()
-
-		//取该区块的哈希值
-		blockHash := block.GetHash()
-
-		//将该区块的哈希值和序列化数据组成键值对存入数据库
-		bc.DB.Set(TABLE_BLOCKS, string(blockHash), block.Serialize())
-
-		//将最后一个区块的哈希值存入数据库，Key 标记为 "last"
-		bc.DB.Set(TABLE_BLOCKS, BLOCK_LAST, blockHash)
+		//判断没有创世纪区块，需要先增加创世纪区块
+		log.Panic("No genesis block, Please add it first!")
 		return
 	}
 
@@ -87,8 +80,8 @@ func (bc *BlockChain) Iterator() *BlockchainIterator {
 
 	//取出最后一个区块的hash，初始化迭代子，准备迭代
 	it := &BlockchainIterator{
-			hashCurrent:hashLast,
-			DB: bc.DB,
+		hashCurrent: hashLast,
+		DB:          bc.DB,
 	}
 
 	return it
