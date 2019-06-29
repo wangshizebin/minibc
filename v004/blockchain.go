@@ -16,7 +16,7 @@ type BlockchainIterator struct {
 	//当前区块的hash
 	hashCurrent []byte
 	//区块链数据库
-	DB *Database
+	db *Database
 }
 
 //向区块链上增加一个区块
@@ -70,6 +70,13 @@ func (bc *BlockChain) AddGenesisBlock() {
 	bc.DB.Set(TABLE_BLOCKS, BLOCK_LAST, blockHash)
 }
 
+//关闭区块链
+func (bc *BlockChain) Close() {
+	if bc.DB != nil {
+		bc.DB.Close()
+	}
+}
+
 // 获得遍历区块链的迭代子
 func (bc *BlockChain) Iterator() *BlockchainIterator {
 	hashLast := bc.DB.Get(TABLE_BLOCKS, BLOCK_LAST)
@@ -81,7 +88,7 @@ func (bc *BlockChain) Iterator() *BlockchainIterator {
 	//取出最后一个区块的hash，初始化迭代子，准备迭代
 	it := &BlockchainIterator{
 		hashCurrent: hashLast,
-		DB:          bc.DB,
+		db:          bc.DB,
 	}
 
 	return it
@@ -94,7 +101,7 @@ func (it *BlockchainIterator) Next() *Block {
 	}
 
 	//取出当前遍历到的区块
-	val := it.DB.Get(TABLE_BLOCKS, string(it.hashCurrent))
+	val := it.db.Get(TABLE_BLOCKS, string(it.hashCurrent))
 	block := Deserialize(val)
 	it.hashCurrent = block.HashPrevBlock
 
@@ -107,12 +114,8 @@ func (it *BlockchainIterator) GetCount() int {
 	if it.hashCurrent == nil {
 		return count
 	}
-	for {
-		if it.Next() != nil {
+	for it.Next() != nil {
 			count++
-			continue
-		}
-		break
 	}
 	return count
 }

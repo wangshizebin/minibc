@@ -44,17 +44,20 @@ func (bb *BlockBrowser) handleShutdown(response http.ResponseWriter, request *ht
 func (bb *BlockBrowser) handleGetBlocks(response http.ResponseWriter, request *http.Request) {
 
 	//获取区块链高度
-	blockHeight := strconv.Itoa(bb.blockChain.Iterator().GetCount())
-
+	blockHeight :=  0
+	it := bb.blockChain.Iterator()
+	if it != nil {
+		blockHeight = it.GetCount()
+	}
 	content := "<html><br>"
 	content = content + "<a href=\"/\">返回首页</a>&nbsp;&nbsp;&nbsp;&nbsp;"
 	content = content + "<a href=\"generateblock\">生成新区块</a>&nbsp;&nbsp;&nbsp;&nbsp;<br>"
-	content = content + "<br><b>&nbsp;&nbsp;&nbsp;&nbsp;当前MiniBC区块链高度：" + blockHeight + "</b><br><br>"
+	content = content + "<br><b>&nbsp;&nbsp;&nbsp;&nbsp;当前MiniBC区块链高度：" + strconv.Itoa(blockHeight) + "</b><br><br>"
 
 	//遍历区块链，打印每一个区块的详细信息
-	iterator := bb.blockChain.Iterator()
-	for {
-		block := iterator.Next()
+	it = bb.blockChain.Iterator()
+	for it != nil {
+		block := it.Next()
 		if block == nil {
 			break
 		}
@@ -73,22 +76,25 @@ func (bb *BlockBrowser) handleGetBlocks(response http.ResponseWriter, request *h
 func (bb *BlockBrowser) handleGenerateBlock(response http.ResponseWriter, request *http.Request) {
 
 	//获取区块链高度
-	height := bb.blockChain.Iterator().GetCount()
+	blockHeight :=  0
+	it := bb.blockChain.Iterator()
+	if it != nil {
+		blockHeight = it.GetCount()
+	}
 
 	//创建新的区块
-	bb.blockChain.AddBlock("MiniBC Block " + strconv.Itoa(height))
-
-	blockHeight := strconv.Itoa(bb.blockChain.Iterator().GetCount())
+	bb.blockChain.AddBlock("MiniBC Block " + strconv.Itoa(blockHeight))
+	blockHeight++
 
 	content := "<html><br>"
 	content = content + "<a href=\"/\">返回首页</a>&nbsp;&nbsp;&nbsp;&nbsp;"
 	content = content + "<a href=\"generateblock\">生成新区块</a>&nbsp;&nbsp;&nbsp;&nbsp;<br>"
-	content = content + "<br><b>&nbsp;&nbsp;&nbsp;&nbsp;当前MiniBC区块链高度：" + blockHeight + "</b><br><br>"
+	content = content + "<br><b>&nbsp;&nbsp;&nbsp;&nbsp;当前MiniBC区块链高度：" + strconv.Itoa(blockHeight) + "</b><br><br>"
 
 	//遍历区块链
-	iterator := bb.blockChain.Iterator()
-	for {
-		block := iterator.Next()
+	it = bb.blockChain.Iterator()
+	for it != nil {
+		block := it.Next()
 		if block == nil {
 			break
 		}
